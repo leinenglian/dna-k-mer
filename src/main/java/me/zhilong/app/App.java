@@ -25,14 +25,24 @@ public class App {
     private static int                             dead_line       = -1;
     // DNA分片大小
     private static int                             k;
-    // 统计时间 —— 起始时间
-    private static long                            startTime;
-    // 统计实践 -- 结束时间
-    private static long                            stopTime;
     // 遍历进行索引时的游标
     private static int                             cursor          = 0;
 
+    // ------------- 计量参数 ------------
+    // 最大内存
+    private static final long                      MAX_MEM         = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+    // 时间 —— 起始时间
+    private static long                            startTime;
+    // 时间 -- 结束时间
+    private static long                            stopTime;
+    // 内存 —— 起始内存
+    private static long                            startMem;
+    // 内存 -- 结束内存
+    private static long                            stopMem;
+
     public static void main(String[] args) {
+
+        System.out.println(">>> JVM MaxMemory : " + MAX_MEM + "MB\n");
 
         try {
 
@@ -54,6 +64,7 @@ public class App {
             // 使用 Apache common 的工具类遍历数据文件
             LineIterator iterator = FileUtils.lineIterator(dataFile, "UTF-8");
 
+            startMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             startTime = System.currentTimeMillis();
 
             while (iterator.hasNext()) {
@@ -88,13 +99,15 @@ public class App {
             }
 
             stopTime = System.currentTimeMillis();
+            stopMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-            System.out.println("\n>>>> Index finished, using times : " + (stopTime - startTime) + "ms <<<<\n");
+            System.out.println("\n>>>> Index finished, using times : " + (stopTime - startTime) + "ms, mems : "
+                    + (stopMem - startMem) / 1024 / 1024 + "MB (Measurement datas are only for reference.) <<<<\n");
 
             while (flag) {
 
                 // 获取需要查找的子串
-                System.out.println(">> Input the key which you want to search.");
+                System.out.println(">> Please enter the word to search:");
                 String k_mer = scanner.nextLine();
 
                 if (k_mer.equals("") || k_mer == null) {
@@ -106,7 +119,7 @@ public class App {
 
                     List<Integer> result = dna_index_cache.get(k_mer);
                     if (result != null) {
-                        System.out.print("There is [" + result.size() + "] matched, they are : [");
+                        System.out.print("There are [" + result.size() + "] result matched : [");
                         for (int key : result) {
                             System.out.print(key / 100 + "," + key % 100 + "," + (key % 100 + k) + " | ");
                         }
@@ -122,8 +135,7 @@ public class App {
             }
 
         } catch (Exception e) {
-            System.out.println(">> We have a problem.");
-            System.out.println(e.toString());
+            System.out.println(">> We have a problem." + e.toString());
         } finally {
             scanner.close();
         }
