@@ -48,7 +48,7 @@ public class App {
 
             // 读取DNA数据文件
             System.out.println(">> Input data file path:");
-            File dataFile = new File(scanner.nextLine());
+            File dataFile = new File(scanner.nextLine().trim());
 
             // 读取DNA分片的大小
             System.out.println(">> Input K:");
