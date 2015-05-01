@@ -42,8 +42,6 @@ public class App {
     private static long                            mer_count;
     // 重复的子串总数
     private static long                            repeat_count;
-    // 当前百分数
-    private static String                          current_percent = "0.00%    ";
 
     // ------------- 计量参数 ------------
     // 最大内存
@@ -88,7 +86,7 @@ public class App {
                 return;
             }
 
-            System.out.print(">> Indexing... " + current_percent);
+            System.out.print(">> Indexing...   0.00%    ");
 
             // 清除上一行的 \n
             scanner.nextLine();
