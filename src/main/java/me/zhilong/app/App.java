@@ -1,6 +1,7 @@
 package me.zhilong.app;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,12 @@ public class App {
     private static String                          dna_data_file;
     // 查询结果保存的位置
     private static String                          result_file;
+    // 子串的总数
+    private static long                            mer_count;
+    // 重复的子串总数
+    private static long                            repeat_count;
+    // 当前百分数
+    private static String                          current_percent = "0.00%";
 
     // ------------- 计量参数 ------------
     // 最大内存
@@ -65,6 +72,7 @@ public class App {
                 result_file = dna_data_file.substring(0, dna_data_file.lastIndexOf(File.separator)) + "/search_result";
             } else {
                 System.out.println(">> No that file.");
+                return;
             }
 
             // 读取DNA分片的大小
@@ -75,7 +83,12 @@ public class App {
             System.out.println(">> Enter the number of rows ready for processing");
             dead_line = scanner.nextInt();
 
-            System.out.println(">> Indexing...");
+            if (dead_line <= 0) {
+                System.out.println(">> The number is less than zero");
+                return;
+            }
+
+            System.out.print(">> Indexing... " + current_percent);
 
             // 清除上一行的 \n
             scanner.nextLine();
@@ -94,6 +107,9 @@ public class App {
                 current_dna_data = iterator.next();
 
                 for (cursor = 1; cursor <= 101 - k; cursor++) {
+                    // 统计总数
+                    mer_count++;
+
                     String subDna = current_dna_data.substring(cursor - 1, cursor - 1 + k);
                     if (dna_index_cache.get(subDna) == null) {
                         dna_index_cache.put(subDna, new ArrayList<Integer>() {
@@ -103,11 +119,17 @@ public class App {
                             }
                         });
                     } else {
+                        // 统计重复的因子
+                        repeat_count++;
+
                         ArrayList<Integer> temp = dna_index_cache.get(subDna);
                         temp.add(current_line * 100 + cursor);
                         dna_index_cache.put(subDna, temp);
                     }
                 }
+
+                // 设置统计进度
+                drawProcess(current_line, dead_line, 2);
 
                 // 设置一个开关，可以仅跑部分测试数据
                 if (dead_line == current_line) {
@@ -120,7 +142,8 @@ public class App {
             stopMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
             System.out.println("\n>>>> Index finished, using times : " + (stopTime - startTime) + "ms, mems : "
-                    + (stopMem - startMem) / 1024 / 1024 + "MB (Measurement datas are only for reference.) <<<<\n");
+                    + (stopMem - startMem) / 1024 / 1024 + "MB, repetition : " + getPercent(repeat_count, mer_count, 5)
+                    + " (Measurement datas are only for reference.) <<<<\n");
 
             while (flag) {
 
@@ -147,7 +170,7 @@ public class App {
                         // 结果文件加上当前时间戳
                         String temp_result = result_file + "-" + System.currentTimeMillis();
 
-                        System.out.println(">>> Saving to file...");
+                        System.out.println(">>> Search finished, Saving to file...");
 
                         //写入结果到文本文件 
                         FileUtils.writeStringToFile(new File(temp_result), fileContent, "UTF-8");
@@ -164,5 +187,34 @@ public class App {
         } finally {
             scanner.close();
         }
+    }
+
+    /**
+     * 画出百分比
+     * 
+     * @param numerator
+     * @param denominator
+     * @param precision
+     */
+    public static void drawProcess(double numerator, double denominator, int precision) {
+        for (int i = 0; i < current_percent.length(); i++) {
+            System.out.print("\b");
+        }
+        current_percent = getPercent(current_line, dead_line, 2);
+        System.out.print(current_percent);
+    }
+
+    /**
+     * 获取当前百分数
+     * 
+     * @param numerator 分子
+     * @param denominator 分母
+     * @return
+     */
+    public static String getPercent(double numerator, double denominator, int precision) {
+        double result = numerator / denominator;
+        NumberFormat nf = NumberFormat.getPercentInstance();
+        nf.setMinimumFractionDigits(precision);
+        return nf.format(result);
     }
 }
