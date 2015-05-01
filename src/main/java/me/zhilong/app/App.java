@@ -27,6 +27,10 @@ public class App {
     private static int                             k;
     // 遍历进行索引时的游标
     private static int                             cursor          = 0;
+    // DNA序列源文件
+    private static String                          dna_data_file;
+    // 查询结果保存的位置
+    private static String                          result_file;
 
     // ------------- 计量参数 ------------
     // 最大内存
@@ -48,7 +52,14 @@ public class App {
 
             // 读取DNA数据文件
             System.out.println(">> Input data file path:");
-            File dataFile = new File(scanner.nextLine().trim());
+            dna_data_file = scanner.nextLine().trim();
+            File dataFile = new File(dna_data_file);
+
+            if (dataFile.exists()) {
+                result_file = dna_data_file.substring(0, dna_data_file.lastIndexOf("/")) + "/search_result";
+            } else {
+                System.out.println(">> No that file.");
+            }
 
             // 读取DNA分片的大小
             System.out.println(">> Input K:");
@@ -57,6 +68,8 @@ public class App {
             // 读取准备处理的行数
             System.out.println(">> Enter the number of rows ready for processing");
             dead_line = scanner.nextInt();
+
+            System.out.println(">> Indexing...");
 
             // 清除上一行的 \n
             scanner.nextLine();
@@ -94,7 +107,6 @@ public class App {
                 if (dead_line == current_line) {
                     break;
                 }
-
                 current_line++;
             }
 
@@ -108,32 +120,37 @@ public class App {
 
                 // 获取需要查找的子串
                 System.out.println(">> Please enter the word to search:");
-                String k_mer = scanner.nextLine();
+                String k_mer = scanner.nextLine().trim();
 
                 if (k_mer.equals("") || k_mer == null) {
                     flag = false;
                     return;
                 } else {
 
-                    startTime = System.currentTimeMillis();
+                    System.out.println(">> Searching...");
 
                     List<Integer> result = dna_index_cache.get(k_mer);
                     if (result != null) {
-                        System.out.print("There are [" + result.size() + "] result matched : [");
+
+                        String fileContent = "| ";
+
                         for (int key : result) {
-                            System.out.print(key / 100 + "," + key % 100 + "," + (key % 100 + k) + " | ");
+                            fileContent += (key / 100 + ", " + key % 100 + ", " + (key % 100 + k) + " | ");
                         }
-                        System.out.println("]");
+
+                        // 结果文件加上当前时间戳
+                        String temp_result = result_file + "-" + System.currentTimeMillis();
+
+                        //写入结果到文本文件 
+                        FileUtils.writeStringToFile(new File(temp_result), fileContent, "UTF-8");
+
+                        System.out.println("We found [" + result.size() + "] results.\nResults are saved in : "
+                                + temp_result + "\n");
                     } else {
-                        System.out.println(">> No result.");
+                        System.out.println(">> No result.\n");
                     }
-
-                    stopTime = System.currentTimeMillis();
-
-                    System.out.println("\n>>>> Search finished, using times : " + (stopTime - startTime) + "ms <<<<\n");
                 }
             }
-
         } catch (Exception e) {
             System.out.println(">> We have a problem." + e.toString());
         } finally {
