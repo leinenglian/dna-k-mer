@@ -78,11 +78,11 @@ public class App {
             k = scanner.nextInt();
 
             // 读取准备处理的行数
-            System.out.println(">> Enter the number of rows ready for processing");
+            System.out.println(">> Enter the number of rows ready for processing:");
             dead_line = scanner.nextInt();
 
-            if (dead_line <= 0) {
-                System.out.println(">> The number is less than zero");
+            if (dead_line < 5) {
+                System.out.println(">> The number of your input is too small, less than 5 !");
                 return;
             }
 
