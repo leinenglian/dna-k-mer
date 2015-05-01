@@ -15,7 +15,7 @@ import org.apache.commons.io.LineIterator;
  * 类App.java的实现描述：根据DNA源文件,建立索引，进行缓存，然后搜索玩
  * 
  * @author 正纬 2015年5月1日 下午11:55:50
- * @version 1.4
+ * @version 1.6
  */
 public class App {
     // 输入流
@@ -43,7 +43,7 @@ public class App {
     // 重复的子串总数
     private static long                            repeat_count;
     // 当前百分数
-    private static String                          current_percent = "0.00%";
+    private static String                          current_percent = "0.00%    ";
 
     // ------------- 计量参数 ------------
     // 最大内存
@@ -129,7 +129,9 @@ public class App {
                 }
 
                 // 设置统计进度
-                drawProcess(current_line, dead_line, 2);
+                if (current_line % (dead_line / 5) == 0) {
+                    System.out.print(getPercent(current_line, dead_line, 2) + "    ");
+                }
 
                 // 设置一个开关，可以仅跑部分测试数据
                 if (dead_line == current_line) {
@@ -140,6 +142,8 @@ public class App {
 
             stopTime = System.currentTimeMillis();
             stopMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+            iterator.close();
 
             System.out.println("\n>>>> Index finished, using times : " + (stopTime - startTime) + "ms, mems : "
                     + (stopMem - startMem) / 1024 / 1024 + "MB, repetition : " + getPercent(repeat_count, mer_count, 5)
@@ -187,21 +191,6 @@ public class App {
         } finally {
             scanner.close();
         }
-    }
-
-    /**
-     * 画出百分比
-     * 
-     * @param numerator
-     * @param denominator
-     * @param precision
-     */
-    public static void drawProcess(double numerator, double denominator, int precision) {
-        for (int i = 0; i < current_percent.length(); i++) {
-            System.out.print("\b");
-        }
-        current_percent = getPercent(current_line, dead_line, 2);
-        System.out.print(current_percent);
     }
 
     /**
