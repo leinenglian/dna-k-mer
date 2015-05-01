@@ -141,6 +141,8 @@ public class App {
                         // 结果文件加上当前时间戳
                         String temp_result = result_file + "-" + System.currentTimeMillis();
 
+                        System.out.println(">>> Saving to file...");
+
                         //写入结果到文本文件 
                         FileUtils.writeStringToFile(new File(temp_result), fileContent, "UTF-8");
 
