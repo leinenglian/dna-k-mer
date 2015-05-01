@@ -10,6 +10,12 @@ import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 
+/**
+ * 类App.java的实现描述：根据DNA源文件,建立索引，进行缓存，然后搜索玩
+ * 
+ * @author 正纬 2015年5月1日 下午11:55:50
+ * @version 1.4
+ */
 public class App {
     // 输入流
     private static Scanner                         scanner         = new Scanner(System.in);
@@ -56,7 +62,7 @@ public class App {
             File dataFile = new File(dna_data_file);
 
             if (dataFile.exists()) {
-                result_file = dna_data_file.substring(0, dna_data_file.lastIndexOf("/")) + "/search_result";
+                result_file = dna_data_file.substring(0, dna_data_file.lastIndexOf(File.separator)) + "/search_result";
             } else {
                 System.out.println(">> No that file.");
             }
