@@ -120,7 +120,7 @@ public class App {
 
                 // 获取需要查找的子串
                 System.out.println(">> Please enter the word to search:");
-                String k_mer = scanner.nextLine().trim();
+                String k_mer = scanner.nextLine().trim().toUpperCase();
 
                 if (k_mer.equals("") || k_mer == null) {
                     flag = false;
