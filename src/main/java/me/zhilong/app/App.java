@@ -15,7 +15,7 @@ import org.apache.commons.io.LineIterator;
  * 类App.java的实现描述：根据DNA源文件,建立索引，进行缓存，然后搜索玩
  * 
  * @author 正纬 2015年5月1日 下午11:55:50
- * @version 1.6
+ * @version 1.6.3
  */
 public class App {
     // 输入流
@@ -56,13 +56,13 @@ public class App {
     private static long                            stopMem;
 
     public static void main(String[] args) {
-
-        System.out.println(">>> JVM MaxMemory : " + MAX_MEM + "MB\n");
+        System.out.println(">>> Welcome to use DNA k-mer search tool <<<\n");
+        System.out.println(">>> JVM MaxMemory : " + MAX_MEM + "MB <<<\n");
 
         try {
 
             // 读取DNA数据文件
-            System.out.println(">> Input data file path:");
+            System.out.println(">> Input the data file path:");
             dna_data_file = scanner.nextLine().trim();
             File dataFile = new File(dna_data_file);
 
@@ -109,7 +109,7 @@ public class App {
                     mer_count++;
 
                     String subDna = current_dna_data.substring(cursor - 1, cursor - 1 + k);
-                    if (dna_index_cache.get(subDna) == null) {
+                    if (null == dna_index_cache.get(subDna)) {
                         dna_index_cache.put(subDna, new ArrayList<Integer>() {
                             private static final long serialVersionUID = -6287991922699429774L;
                             {
@@ -143,9 +143,12 @@ public class App {
 
             iterator.close();
 
-            System.out.println("\n>>>> Index finished, using times : " + (stopTime - startTime) + "ms, mems : "
-                    + (stopMem - startMem) / 1024 / 1024 + "MB, repetition : " + getPercent(repeat_count, mer_count, 5)
-                    + " (Measurement datas are only for reference.) <<<<\n");
+            System.out.println("\n\n>>>>\nIndex finished, performance :");
+            System.out.println("Times  : " + (stopTime - startTime) + "ms;");
+            System.out.println("Mems   : " + (stopMem - startMem) / 1024 / 1024 + "mb;");
+            System.out.println("Counts : " + mer_count + ";");
+            System.out.println("Repetition : " + getPercent(repeat_count, mer_count, 5) + ";");
+            System.out.println("(Measurement datas are only for reference.)\n<<<<\n");
 
             while (flag) {
 
@@ -172,13 +175,13 @@ public class App {
                         // 结果文件加上当前时间戳
                         String temp_result = result_file + "-" + System.currentTimeMillis();
 
-                        System.out.println(">>> Search finished, Saving to file...");
+                        System.out.println("\n>>>>\nSearch finished, We found [" + result.size() + "] results.");
+                        System.out.println("Saving to result file...");
 
                         //写入结果到文本文件 
                         FileUtils.writeStringToFile(new File(temp_result), fileContent, "UTF-8");
 
-                        System.out.println("We found [" + result.size() + "] results.\nResults are saved in : "
-                                + temp_result + "\n");
+                        System.out.println("Results are saved in : [" + temp_result + "]\n<<<<\n");
                     } else {
                         System.out.println(">> No result.\n");
                     }
