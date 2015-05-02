@@ -143,7 +143,8 @@ public class App {
 
             iterator.close();
 
-            System.out.println("\n\n>>>>\nIndex finished, performance :");
+            System.out
+                    .println("\n\n>>>>\nIndex finished, on k = " + k + " and line = " + dead_line + ", performance :");
             System.out.println("Times  : " + (stopTime - startTime) + "ms;");
             System.out.println("Mems   : " + (stopMem - startMem) / 1024 / 1024 + "mb;");
             System.out.println("Counts : " + mer_count + ";");
