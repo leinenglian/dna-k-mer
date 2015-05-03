@@ -15,7 +15,7 @@ import org.apache.commons.io.LineIterator;
  * 类App.java的实现描述：根据DNA源文件,建立索引，进行缓存，然后搜索玩
  * 
  * @author 正纬 2015年5月1日 下午11:55:50
- * @version 1.6.3
+ * @version 1.6.5
  */
 public class App {
     // 输入流
@@ -164,7 +164,12 @@ public class App {
 
                     System.out.println(">> Searching...");
 
+                    startTime = System.nanoTime();
+
                     List<Integer> result = dna_index_cache.get(k_mer);
+
+                    stopTime = System.nanoTime();
+
                     if (result != null) {
 
                         String fileContent = "| ";
@@ -176,7 +181,9 @@ public class App {
                         // 结果文件加上当前时间戳
                         String temp_result = result_file + "-" + System.currentTimeMillis();
 
-                        System.out.println("\n>>>>\nSearch finished, We found [" + result.size() + "] results.");
+                        System.out.println("\n>>>>\nSearch finished, on k_mer = " + k_mer + ", performance :");
+                        System.out.println("Results : " + result.size() + ";");
+                        System.out.println("Times   : " + (stopTime - startTime) + "ns;");
                         System.out.println("Saving to result file...");
 
                         //写入结果到文本文件 
