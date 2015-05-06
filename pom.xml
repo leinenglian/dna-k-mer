@@ -7,11 +7,23 @@
 	<artifactId>dna.search</artifactId>
 	<version>1.6.5</version>
 
+	<properties>
+		<!-- 指定commons.io.version -->
+		<commons.io.version>2.4</commons.io.version>
+		<!-- 指定编码集 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- 指定目标jdk -->
+		<jdk.target.version>1.6</jdk.target.version>
+		<!-- 指定Main class -->
+		<main.classname>me.zhilong.app.App</main.classname>
+
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
+			<version>${commons.io.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -19,16 +31,39 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
+					<source>1.6</source>
+					<target>${jdk.target.version}</target>
+					<showWarnings>true</showWarnings>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>me.zhilong.app.App</mainClass>
+							<mainClass>${main.classname}</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
